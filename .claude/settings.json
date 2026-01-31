@@ -1,0 +1,47 @@
+{
+    "hooks": {
+        "SessionStart": [
+            {
+                "matcher": "startup",
+                "hooks": [
+                    {
+                        "type": "command",
+                        "command": "echo '🧠 MEMORY LOADED: Reading decisions from .claude/docs/DECISIONS.md...'; cat .claude/docs/DECISIONS.md"
+                    }
+                ]
+            }
+        ],
+        "PreToolUse": [
+            {
+                "matcher": "Bash",
+                "hooks": [
+                    {
+                        "type": "command",
+                        "command": "if [[ \"$TOOL_INPUT_COMMAND\" == *\"rm -rf\"* ]] || [[ \"$TOOL_INPUT_COMMAND\" == *\"drop table\"* ]]; then echo '{\"hookSpecificOutput\":{\"hookEventName\":\"PreToolUse\",\"permissionDecision\":\"ask\",\"permissionDecisionReason\":\"⚠️ DESTRUCTIVE COMMAND DETECTED. User confirmation required.\"}}'; else exit 0; fi"
+                    }
+                ]
+            },
+            {
+                "matcher": "Edit|Write",
+                "hooks": [
+                    {
+                        "type": "command",
+                        "command": "if [[ \"$TOOL_INPUT_FILE_PATH\" == *\".env\"* ]]; then echo '{\"hookSpecificOutput\":{\"hookEventName\":\"PreToolUse\",\"permissionDecision\":\"ask\",\"permissionDecisionReason\":\"⚠️ SENSITIVE FILE EDIT (.env). Confirm secret handling.\"}}'; else exit 0; fi"
+                    }
+                ]
+            }
+        ],
+        "PostToolUse": [
+            {
+                "matcher": "Edit|Write",
+                "hooks": [
+                    {
+                        "type": "command",
+                        "command": "if [ -f \"package.json\" ]; then npx prettier --write \"$TOOL_INPUT_FILE_PATH\" > /dev/null 2>&1; fi",
+                        "async": true
+                    }
+                ]
+            }
+        ]
+    }
+}
