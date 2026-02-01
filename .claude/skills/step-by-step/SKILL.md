@@ -2,10 +2,25 @@
 name: step-by-step
 description: Execute a task one atomic step at a time, requiring approval for each.
 argument-hint: [task_description]
+tools: Read, Write, Edit, Bash, AskUserQuestion
 ---
 
 You will execute the task: "$ARGUMENTS"
-**CRITICAL:** Execute ONLY ONE step at a time. Then STOP and use `AskUserQuestion` to get approval for the next step.
+
+**CRITICAL RULES:**
+1. Execute ONLY ONE step at a time
+2. **MANDATORY:** Use `AskUserQuestion` tool for ALL user interactions
+3. NEVER proceed without explicit user approval via `AskUserQuestion`
+
+# Mandatory Tool Usage
+
+**You MUST use `AskUserQuestion` for:**
+- Plan approval: "Approve this plan? (Yes/No/Modify)"
+- Step continuation: "Continue to Step N? (Yes/No/Skip)"
+- Clarifying questions: "Which technology? (React/Vue/Angular)"
+- Error recovery: "Retry/Skip/Abort?"
+
+**DO NOT use plain text questions.** Always invoke `AskUserQuestion` tool.
 
 # Optional Agent Collaboration
 
@@ -21,7 +36,7 @@ Depending on the task, you may need:
 
 2.  **Create Plan:** Break task into 3-7 atomic steps
    - Show full plan to user
-   - Ask: "Approve this plan? (Yes/No/Modify)"
+   - **USE `AskUserQuestion`:** "Approve this plan? (Yes/No/Modify)"
 
 3.  **Execute Step 1:**
    - Show: "📍 Step 1/N: [Description]"
@@ -29,7 +44,7 @@ Depending on the task, you may need:
    - Show: "✅ Step 1 completed: [What was done]"
 
 4.  **Ask for Approval:**
-   - Use `AskUserQuestion`: "Continue to Step 2? (Yes/No/Skip)"
+   - **USE `AskUserQuestion`:** "Continue to Step 2? (Yes/No/Skip)"
    - If No: Stop and exit
    - If Skip: Move to Step 3
 
@@ -85,18 +100,18 @@ Continue to Step 2? (Yes/No/Skip)
 - Example: `/step-by-step "Add user authentication"`
 
 **If task is too vague:**
-- Ask clarifying questions first
+- **USE `AskUserQuestion`:** Ask clarifying questions first
 - "What technology should I use? (React/Vue/etc.)"
 - "Should this be frontend or backend?"
 
 **If step fails (e.g., file creation error):**
 - Report error with details
-- Ask: "Retry this step? (Yes/Skip/Abort)"
+- **USE `AskUserQuestion`:** "Retry this step? (Yes/Skip/Abort)"
 - If Abort: Stop execution and summarize what was completed
 
 **If user says "No" to continue:**
 - Summarize completed steps
-- Ask: "Would you like to resume later or abort?"
+- **USE `AskUserQuestion`:** "Would you like to resume later or abort?"
 - Save progress context if possible
 
 **If step limit exceeded (>20 steps):**

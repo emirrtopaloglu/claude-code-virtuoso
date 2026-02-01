@@ -78,11 +78,13 @@ For each file:
 
 **JavaScript/TypeScript:**
 ```bash
-# Check if package.json exists
-if [ -f "package.json" ]; then
+# Get changed JS/TS files
+CHANGED_JS_FILES=$(git diff --name-only main...HEAD 2>/dev/null | grep -E '\.(js|ts|jsx|tsx)$' | tr '\n' ' ')
+
+if [ -n "$CHANGED_JS_FILES" ] && [ -f "package.json" ]; then
   # Try ESLint
   if npm list eslint >/dev/null 2>&1; then
-    npx eslint --fix [changed_files]
+    npx eslint --fix $CHANGED_JS_FILES
   fi
   
   # Try TypeScript
@@ -94,14 +96,19 @@ fi
 
 **Python:**
 ```bash
-# Try Black (formatter)
-if command -v black >/dev/null 2>&1; then
-  black [changed_files]
-fi
+# Get changed Python files
+CHANGED_PY_FILES=$(git diff --name-only main...HEAD 2>/dev/null | grep -E '\.py$' | tr '\n' ' ')
 
-# Try Ruff (linter)
-if command -v ruff >/dev/null 2>&1; then
-  ruff check --fix [changed_files]
+if [ -n "$CHANGED_PY_FILES" ]; then
+  # Try Black (formatter)
+  if command -v black >/dev/null 2>&1; then
+    black $CHANGED_PY_FILES
+  fi
+
+  # Try Ruff (linter)
+  if command -v ruff >/dev/null 2>&1; then
+    ruff check --fix $CHANGED_PY_FILES
+  fi
 fi
 ```
 
@@ -113,8 +120,11 @@ fi
 ## Step 6: Run Prettier (if available)
 
 ```bash
-if npm list prettier >/dev/null 2>&1; then
-  npx prettier --write [changed_files]
+# Get all changed files for formatting
+CHANGED_FILES=$(git diff --name-only main...HEAD 2>/dev/null | tr '\n' ' ')
+
+if [ -n "$CHANGED_FILES" ] && npm list prettier >/dev/null 2>&1; then
+  npx prettier --write $CHANGED_FILES
 fi
 ```
 

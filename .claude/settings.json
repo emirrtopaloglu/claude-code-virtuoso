@@ -48,7 +48,7 @@
                 "hooks": [
                     {
                         "type": "command",
-                        "command": "echo '🧠 MEMORY LOADED: Reading decisions from .claude/docs/DECISIONS.md...'; cat .claude/docs/DECISIONS.md"
+                        "command": "echo '🧠 LOADING CLAUDE CODE VIRTUOSO...'; echo ''; echo '📘 SYSTEM:'; head -50 CLAUDE.md 2>/dev/null || echo 'CLAUDE.md not found'; echo ''; echo '📋 DECISIONS:'; cat .claude/docs/DECISIONS.md 2>/dev/null || echo 'No decisions yet'"
                     },
                     {
                         "type": "command",

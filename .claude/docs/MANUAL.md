@@ -9,7 +9,7 @@ Virtuoso transforms Claude Code into a coordinated team of specialized AI agents
 - 👥 **8 Specialized Agents:** Each expert in their domain (Product, Backend, Frontend, Mobile, QA, Security, Monetization)
 - 🎯 **Agent Orchestration:** Tech Lead coordinates multi-agent workflows
 - 🛡️ **Quality Gates:** Automatic QA and Security checks before deployment
-- 🔄 **Standardized Workflows:** 7 production-ready skills for common tasks
+- 🔄 **Standardized Workflows:** 10 production-ready skills for common tasks
 - 📋 **Cross-Agent Communication:** Agents notify each other when changes affect their domain
 
 **Built for:** Software engineers, CTOs, and technical founders who want AI assistance that understands software architecture, not just code syntax.
@@ -20,10 +20,11 @@ Virtuoso transforms Claude Code into a coordinated team of specialized AI agents
 
 1. **Start New Project:** `/bootstrap`
 2. **Define a Feature:** `/interview [idea]`
-3. **Check Progress:** `/roadmap` (coming soon)
-4. **Save a Decision:** `/record-decision "Use PostgreSQL"`
-5. **Polish Code:** `/polish`
-6. **Ship to Production:** `/ship-it`
+3. **Check Progress:** `/roadmap`
+4. **Debug Issues:** `/debug [problem]`
+5. **Refactor Code:** `/refactor [target]`
+6. **Polish Code:** `/polish`
+7. **Ship to Production:** `/ship-it`
 
 ---
 
@@ -149,16 +150,69 @@ Skills are reusable workflows triggered with `/command-name`.
 ---
 
 ### 🧭 `/guide`
-**Purpose:** Interactive onboarding for new users.  
+**Purpose:** Quick onboarding for new users.  
 **What it does:**
-- Assesses your experience level
-- Provides tailored tutorial
-- Walks through a practice scenario
+- Asks your experience level (Beginner/Intermediate/Expert)
+- Shows relevant commands and features
+- Offers hands-on demo
 
 **Usage:**
 ```
 /guide
 ```
+
+---
+
+### 📍 `/roadmap`
+**Purpose:** View project status and get next step recommendations.  
+**What it does:**
+- Scans feature specs in `.claude/docs/specs/`
+- Shows status (Not Started / In Progress / Done)
+- Analyzes pending decisions and TODOs
+- **Recommends the most important next action**
+
+**Usage:**
+```
+/roadmap
+```
+
+**Output:** Visual roadmap with prioritized next step.
+
+---
+
+### 🐛 `/debug [bug_description]`
+**Purpose:** Systematic bug investigation and resolution.  
+**What it does:**
+1. Analyzes bug report
+2. Reproduces the issue
+3. Traces root cause (5 Whys technique)
+4. Implements minimal fix
+5. Adds regression test
+6. Documents resolution
+
+**Usage:**
+```
+/debug "Login fails with 'undefined' error"
+/debug "API returns 500 on large payloads"
+```
+
+---
+
+### ♻️ `/refactor [target]`
+**Purpose:** Safe, incremental code refactoring.  
+**What it does:**
+1. Analyzes current code structure
+2. Creates refactoring plan
+3. Executes with test verification at each step
+4. Ensures behavior unchanged
+
+**Usage:**
+```
+/refactor "src/utils/helpers.ts"
+/refactor "extract user validation logic"
+```
+
+**Recipes:** Extract Function, Replace Conditional, Simplify Nesting, Remove Duplication
 
 ---
 

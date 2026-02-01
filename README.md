@@ -2,211 +2,356 @@
 
 > **AI-Powered Engineering Team Orchestrator for Claude Code**
 
-Transform Claude Code into a coordinated engineering organization. Virtuoso orchestrates 8 specialized AI agents—Product Managers, Architects, QA Engineers, Security Auditors—all working together under a Tech Lead coordinator. Get persistent memory, cross-agent communication, and production-ready quality gates.
+Transform Claude Code into a coordinated engineering organization. Virtuoso orchestrates 8 specialized AI agents—Product Managers, Architects, QA Engineers, Security Auditors—all working together under a Tech Lead coordinator.
 
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 [![Version](https://img.shields.io/badge/version-2.0-green.svg)](CHANGELOG.md)
-[![Claude Code](https://img.shields.io/badge/Claude%20Code-Compatible-purple.svg)](https://code.claude.com)
+[![Claude Code](https://img.shields.io/badge/Claude%20Code-Compatible-purple.svg)](https://claude.ai)
+[![Skills](https://img.shields.io/badge/skills-10-orange.svg)](#-available-skills)
+[![Agents](https://img.shields.io/badge/agents-8-blue.svg)](#-agent-team)
 
 ---
 
 ## 🎯 What Problem Does This Solve?
 
-**Standard Claude Code:** One AI assistant doing everything  
-**Claude Code Virtuoso:** A complete engineering team with specialized roles
-
-- ❌ **Problem:** Claude forgets decisions between sessions  
-  ✅ **Solution:** ADR-based memory system with automatic context loading
-
-- ❌ **Problem:** No separation of concerns (frontend/backend/QA/security all mixed)  
-  ✅ **Solution:** 8 specialized agents, each expert in their domain
-
-- ❌ **Problem:** No quality gates—code ships without testing/security review  
-  ✅ **Solution:** Mandatory QA + Security checks before deployment
-
-- ❌ **Problem:** No coordination when multiple areas need changes  
-  ✅ **Solution:** Tech Lead orchestrator coordinates multi-agent workflows
+| Standard Claude Code | Claude Code Virtuoso |
+|:---------------------|:---------------------|
+| ❌ Forgets decisions between sessions | ✅ ADR-based memory system with auto-loading |
+| ❌ One AI doing everything | ✅ 8 specialized agents for each domain |
+| ❌ No quality gates | ✅ Mandatory QA + Security before deployment |
+| ❌ No coordination | ✅ Tech Lead orchestrates multi-agent workflows |
 
 ---
 
-## ⚡ Core Features
+## 🚀 Quick Install
 
-### 🧠 Persistent Memory System
+### One-Line Install
 
-Claude typically forgets decisions between sessions. Virtuoso introduces a file-based memory system:
+```bash
+curl -fsSL https://raw.githubusercontent.com/emirrtopaloglu/claude-code-virtuoso/main/install.sh | bash
+```
 
-- **`DECISIONS.md`**: Automatically loaded at every session start. Tracks architectural choices, stack decisions, and product priorities.
-- **Impact Tracking**: All decisions tagged with HIGH/MEDIUM/LOW impact and rollback plans.
-- **Context Injection**: Hooks automatically feed project context to Claude before it starts working.
-- **Decision Templates**: Structured ADR (Architecture Decision Records) templates for major decisions.
+### Manual Install
 
-### 👥 Coordinated Agent System (v2.0)
+```bash
+# Clone the repository
+git clone https://github.com/emirrtopaloglu/claude-code-virtuoso.git
 
-Instead of one generic assistant, Virtuoso orchestrates **8 specialized agents** that collaborate:
+# Go to your project
+cd your-project
 
-| Agent | Role | Key Capability |
-|:------|:-----|:---------------|
-| **@product-manager** | Product Strategy | Interviews you, researches competitors, creates specs |
-| **@tech-lead** | **Agent Orchestrator** | Coordinates all agents, resolves conflicts, makes final calls |
-| **@backend-architect** | API & Database | Designs endpoints, schemas, notifies frontend of changes |
-| **@frontend-architect** | UI/UX & Components | Builds accessible, pixel-perfect interfaces |
-| **@mobile-architect** | Mobile Development | Handles React Native, Expo, native modules |
-| **@qa-engineer** | Testing & Quality | Writes tests, finds edge cases, **blocks bad deploys** |
-| **@security-auditor** | Security | OWASP audits, secret detection, **blocks vulnerabilities** |
-| **@monetization-expert** | Revenue Strategy | Pricing models, feature gating, conversion optimization |
+# Copy Virtuoso configuration
+cp -r ~/claude-code-virtuoso/.claude .
+cp ~/claude-code-virtuoso/CLAUDE.md .
 
-**NEW in v2.0:** Agents now delegate tasks to each other and follow collaboration protocols.
+# Start Claude Code
+claude
+```
 
-### 🛠️ Production-Ready Skills
+### Install Script Options
 
-Custom slash commands to standardize your workflow:
+```bash
+# Download the install script
+curl -O https://raw.githubusercontent.com/emirrtopaloglu/claude-code-virtuoso/main/install.sh
+chmod +x install.sh
 
-| Skill | Purpose | Required Agents |
-|:------|:--------|:----------------|
-| **`/bootstrap`** | Initialize new project | `@tech-lead` |
-| **`/interview`** | Deep requirements gathering | `@product-manager` (mandatory) |
-| **`/step-by-step`** | Safe execution with approval per step | Context-dependent |
-| **`/polish`** | Remove AI slop, fix lint errors | None (autonomous) |
-| **`/record-decision`** | Save decision to long-term memory | Any agent |
-| **`/ship-it`** | Lint → Test → Security → Build → PR | `@qa-engineer`, `@security-auditor` |
-| **`/guide`** | Interactive onboarding tutorial | None |
+# Install in current directory
+./install.sh
 
-**NEW in v2.0:** Comprehensive error handling, recovery options, and success criteria for every skill.
+# Install in a specific project
+./install.sh ~/my-project
 
-### 🛡️ Safety & Automation Hooks
+# Clone globally for reuse
+./install.sh --global
+```
 
-**Pre-Tool Use (Guardrails):**
-- 🚨 Destructive commands (`rm -rf`, `drop table`) → Ask for confirmation
-- 🔐 Sensitive files (`.env`, `secrets.json`) → Warn before editing
-- 📦 Package installs (`npm install`, `pip install`) → Confirm dependency addition
-- 📋 Dependency files (`package.json`, `requirements.txt`) → Confirm modification
+---
 
-**Post-Tool Use (Automation):**
-- ✨ Auto-format with Prettier (JavaScript/TypeScript)
+## 📦 What Gets Installed
+
+```
+your-project/
+├── CLAUDE.md                    # Main orchestration system (auto-loaded)
+└── .claude/
+    ├── settings.json            # Hooks & safety configuration
+    ├── agents/                  # 8 specialized AI agents
+    │   ├── tech-lead.md
+    │   ├── product-manager.md
+    │   ├── backend-architect.md
+    │   ├── frontend-architect.md
+    │   ├── mobile-architect.md
+    │   ├── qa-engineer.md
+    │   ├── security-auditor.md
+    │   └── monetization-expert.md
+    ├── skills/                  # 10 slash commands
+    │   ├── bootstrap/
+    │   ├── interview/
+    │   ├── step-by-step/
+    │   ├── polish/
+    │   ├── record-decision/
+    │   ├── ship-it/
+    │   ├── guide/
+    │   ├── roadmap/
+    │   ├── debug/
+    │   └── refactor/
+    ├── docs/
+    │   ├── DECISIONS.md         # Memory system (auto-loaded)
+    │   ├── MANUAL.md            # User guide
+    │   ├── specs/               # Feature specifications
+    │   └── decisions/           # Detailed ADRs
+    └── templates/               # ADR, Spec, README templates
+```
+
+---
+
+## 🎮 Usage
+
+### Starting a Session
+
+```bash
+cd your-project
+claude
+```
+
+At session start, Virtuoso automatically:
+1. 🧠 Loads `CLAUDE.md` (orchestration system)
+2. 📋 Loads `DECISIONS.md` (memory)
+3. 📊 Shows git status
+
+### Calling Agents
+
+Summon specialized agents with `@agent-name`:
+
+```
+@product-manager Define the scope for a user dashboard feature
+
+@tech-lead Should we use REST or GraphQL for our API?
+
+@backend-architect Design the authentication endpoints
+
+@frontend-architect Create a responsive navigation component
+
+@security-auditor Review the payment flow for vulnerabilities
+```
+
+### Using Skills
+
+Execute workflows with `/skill-name`:
+
+```
+/guide                              # Quick onboarding
+/interview "build a todo app"       # Define a feature
+/bootstrap                          # Initialize project
+/step-by-step "add user auth"       # Safe execution
+/roadmap                            # See project status
+/debug "login returns undefined"    # Fix bugs
+/refactor "src/utils.ts"            # Improve code
+/polish                             # Clean up code
+/ship-it                            # Deploy pipeline
+/record-decision "Use PostgreSQL"   # Save to memory
+```
+
+---
+
+## 👥 Agent Team
+
+| Agent | Role | When to Use |
+|:------|:-----|:------------|
+| **@product-manager** | Product Strategy | "Turn my idea into a spec" |
+| **@tech-lead** | Orchestrator | "Coordinate this feature across teams" |
+| **@backend-architect** | API & Database | "Design the user API" |
+| **@frontend-architect** | UI/UX | "Build a dashboard component" |
+| **@mobile-architect** | Mobile Dev | "Implement React Native navigation" |
+| **@qa-engineer** | Testing | "Find edge cases in checkout flow" |
+| **@security-auditor** | Security | "Check for SQL injection risks" |
+| **@monetization-expert** | Revenue | "Should this feature be paid?" |
+
+---
+
+## 🛠 Available Skills
+
+| Skill | Purpose | Example |
+|:------|:--------|:--------|
+| `/guide` | Quick onboarding | `/guide` |
+| `/interview` | Requirements gathering | `/interview "e-commerce platform"` |
+| `/bootstrap` | Initialize project | `/bootstrap` |
+| `/step-by-step` | Safe execution | `/step-by-step "implement login"` |
+| `/roadmap` | Project status & next steps | `/roadmap` |
+| `/debug` | Bug investigation | `/debug "API returns 500"` |
+| `/refactor` | Code improvement | `/refactor "extract validation"` |
+| `/polish` | Remove AI slop, fix lint | `/polish` |
+| `/ship-it` | Deploy pipeline | `/ship-it` |
+| `/record-decision` | Save to memory | `/record-decision "Use Tailwind"` |
+
+---
+
+## 🔄 Recommended Workflow
+
+### 1️⃣ Define (Strategy)
+
+```
+/interview "I want to build a real-time chat app"
+```
+
+Creates a detailed spec in `.claude/docs/specs/`
+
+### 2️⃣ Decide (Architecture)
+
+```
+@tech-lead What stack should we use for real-time features?
+/record-decision "Use Socket.io for WebSocket connections"
+```
+
+### 3️⃣ Build (Execution)
+
+```
+/step-by-step "Implement the chat message component"
+@backend-architect Create the message API endpoints
+```
+
+### 4️⃣ Debug (When Issues Arise)
+
+```
+/debug "Messages not appearing in real-time"
+```
+
+### 5️⃣ Improve (Refactoring)
+
+```
+/refactor "consolidate message handling logic"
+```
+
+### 6️⃣ Polish (Cleanup)
+
+```
+/polish
+```
+
+### 7️⃣ Ship (Deployment)
+
+```
+/ship-it
+```
+
+---
+
+## 🧠 Memory System
+
+Virtuoso remembers decisions across sessions via `DECISIONS.md`:
+
+```markdown
+| ID  | Date       | Area         | Decision              | Status     | Impact |
+| --- | ---------- | ------------ | --------------------- | ---------- | ------ |
+| 001 | 2026-02-01 | Architecture | Use Next.js 14        | [ACCEPTED] | HIGH   |
+| 002 | 2026-02-01 | Database     | PostgreSQL for ACID   | [ACCEPTED] | HIGH   |
+| 003 | 2026-02-01 | Styling      | Tailwind CSS          | [ACCEPTED] | MEDIUM |
+```
+
+Save decisions anytime:
+```
+/record-decision "Use Redis for session caching"
+```
+
+---
+
+## 🛡 Safety Features
+
+### Pre-Tool Guardrails
+
+Virtuoso asks for confirmation before:
+- 🚨 Destructive commands (`rm -rf`, `drop table`)
+- 🔐 Sensitive file edits (`.env`, secrets)
+- 📦 Package installations (`npm install`, `pip install`)
+- 📋 Dependency file changes (`package.json`)
+
+### Post-Tool Automation
+
+After editing files:
+- ✨ Auto-format with Prettier (JS/TS)
 - 🐍 Auto-format with Black (Python)
-- ✅ Confirmation messages for package installations
-
-**Session Start:**
-- 🧠 Load `DECISIONS.md` automatically
-- 📊 Show git status for quick context
 
 ---
 
-## 🚀 Quick Start
+## ⚙️ Configuration
 
-### Option 1: Copy to New Project (Recommended)
+### Customize Agents
 
-1.  Clone this repository to your local machine:
+Edit or remove agents in `.claude/agents/`:
 
-    ```bash
-    git clone https://github.com/emirrtopaloglu/claude-code-virtuoso.git ~/claude-code-virtuoso
-    ```
+```bash
+# Remove mobile agent if not needed
+rm .claude/agents/mobile-architect.md
+```
 
-2.  Navigate to your **new project** directory:
+### Customize Hooks
 
-    ```bash
-    mkdir my-new-project && cd my-new-project
-    ```
+Edit `.claude/settings.json` to modify:
+- Session start behavior
+- Pre/post tool use actions
+- Safety guardrails
 
-3.  Copy the Virtuoso configuration:
+### Customize Skills
 
-    ```bash
-    cp -r ~/claude-code-virtuoso/.claude .
-    ```
-
-4.  Initialize Claude Code:
-
-    ```bash
-    claude
-    ```
-
-5.  Run the guide to verify installation:
-    ```
-    > /guide
-    ```
+Each skill is in `.claude/skills/[name]/SKILL.md`. Edit to:
+- Change workflow steps
+- Add/remove required agents
+- Modify output format
 
 ---
 
-## 📂 Directory Structure
+## 📚 Documentation
 
-Virtuoso organizes Claude Code's configuration into a scalable structure:
-
-```text
-.claude/
-├── CLAUDE.md            # The Constitution & Authority Protocol
-├── settings.json        # Hooks & Permission configurations
-├── docs/
-│   ├── DECISIONS.md     # Architecture Decision Records (ADR)
-│   └── MANUAL.md        # Interactive User Guide
-├── agents/              # Specialized Sub-agents
-│   ├── tech-lead.md
-│   ├── product-manager.md
-│   ├── frontend-architect.md
-│   └── ...
-└── skills/              # Executable Slash Commands
-    ├── bootstrap.md
-    ├── interview.md
-    ├── polish.md
-    └── ...
-```
+| Document | Purpose |
+|:---------|:--------|
+| [CLAUDE.md](CLAUDE.md) | Main orchestration system |
+| [MANUAL.md](.claude/docs/MANUAL.md) | Detailed user guide |
+| [DECISIONS.md](.claude/docs/DECISIONS.md) | Memory system |
 
 ---
 
-## workflow The Virtuoso Workflow
+## 🔧 Troubleshooting
 
-Virtuoso is designed for a **Strategy -> Execution -> Polish** loop.
+### "Agent not responding"
 
-### 1. Strategy & Definition
-
-Don't start coding immediately. Define _what_ you are building.
-
+Make sure you use the `@` prefix:
 ```
-> /interview "I want to build a real-time dashboard"
+✅ @backend-architect design the API
+❌ backend-architect design the API
 ```
 
-### 2. Architecture & Setup
+### "Skill not found"
 
-Decide on the stack and record it to memory.
-
+Skills use `/` prefix:
 ```
-> /bootstrap
-> /record-decision "We are using Next.js 14 and Supabase"
-```
-
-### 3. Execution
-
-Build features using the appropriate architect or safety mode.
-
-```
-> Use frontend-architect to build the Hero Component
-> /step-by-step "Implement the Auth flow"
+✅ /interview "my idea"
+❌ interview "my idea"
 ```
 
-### 4. Quality Control
+### "Decisions not loading"
 
-Never merge dirty code.
+Check that `.claude/docs/DECISIONS.md` exists and `settings.json` has the SessionStart hook.
 
-```
-> /polish
-```
+### "Claude doesn't remember context"
 
-### 5. Deployment
-
-Verify and ship.
-
-```
-> /ship-it
-```
+Run `/record-decision` to save important decisions to memory.
 
 ---
 
-## 🔧 Customization
+## 🤝 Contributing
 
-To adapt Virtuoso to your specific tech stack:
+1. Fork the repository
+2. Create a feature branch
+3. Make your changes
+4. Submit a pull request
 
-1.  **Edit `.claude/CLAUDE.md`**: Update the `TECH STACK` section with your preferred frameworks (e.g., React, Python, AWS).
-2.  **Update Agents**: If you don't do mobile development, you can remove `.claude/agents/mobile-architect.md`.
+---
 
 ## 📄 License
 
-MIT License. Feel free to use this in your commercial or open-source projects.
+MIT License - Feel free to use in commercial or open-source projects.
+
+---
+
+<p align="center">
+  <b>Built with ❤️ for developers who want AI that understands architecture, not just code.</b>
+</p>

@@ -193,7 +193,10 @@ Some skills **require specific agents** to execute them.
 | `/polish` | (autonomous) | Remove slop, fix lint |
 | `/record-decision` | (any) | Save decision to memory |
 | `/ship-it` | @qa-engineer + @security-auditor | Deploy pipeline |
-| `/guide` | (autonomous) | Interactive onboarding |
+| `/guide` | (autonomous) | Quick onboarding |
+| `/roadmap` | (autonomous) | Project status + next steps |
+| `/debug` | (context-dependent) | Bug investigation + fix |
+| `/refactor` | (context-dependent) | Safe code restructuring |
 
 ### Skill Usage Rules
 
@@ -214,6 +217,12 @@ Some skills **require specific agents** to execute them.
 1. Call @qa-engineer to run tests
 2. Call @security-auditor to scan for vulnerabilities
 3. Block deployment if either fails
+```
+
+**`/step-by-step` - MUST use AskUserQuestion tool:**
+```bash
+# All user interactions require AskUserQuestion tool
+# Never proceed without explicit user approval
 ```
 
 #### Skill Invocation Pattern
@@ -237,12 +246,12 @@ Return to default CTO persona
 | Agent | Can Use These Skills |
 |:------|:---------------------|
 | @product-manager | `/interview`, `/record-decision` |
-| @tech-lead | `/bootstrap`, `/record-decision`, `/ship-it` |
-| @backend-architect | `/step-by-step`, `/polish`, `/record-decision` |
-| @frontend-architect | `/step-by-step`, `/polish` |
-| @mobile-architect | `/step-by-step`, `/polish` |
-| @qa-engineer | `/polish` (called by `/ship-it`) |
-| @security-auditor | (called by `/ship-it`) |
+| @tech-lead | `/bootstrap`, `/record-decision`, `/ship-it`, `/roadmap` |
+| @backend-architect | `/step-by-step`, `/polish`, `/record-decision`, `/debug`, `/refactor` |
+| @frontend-architect | `/step-by-step`, `/polish`, `/debug`, `/refactor` |
+| @mobile-architect | `/step-by-step`, `/polish`, `/debug`, `/refactor` |
+| @qa-engineer | `/polish`, `/debug` (called by `/ship-it`) |
+| @security-auditor | `/debug` (called by `/ship-it`) |
 | @monetization-expert | `/record-decision` |
 
 ---
