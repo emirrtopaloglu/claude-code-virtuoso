@@ -29,17 +29,36 @@ echo -e "${PURPLE}║${NC}         AI-Powered Engineering Team Orchestrator     
 echo -e "${PURPLE}╚═══════════════════════════════════════════════════════════════╝${NC}"
 echo ""
 
+# Check if running in pipe mode (curl | bash)
+PIPE_MODE=false
+FORCE_MODE=false
+if [ ! -t 0 ]; then
+    PIPE_MODE=true
+fi
+
+# Parse arguments
+for arg in "$@"; do
+    case $arg in
+        --force|-f)
+            FORCE_MODE=true
+            shift
+            ;;
+    esac
+done
+
 # Check if we're in a project directory
 if [ "$1" == "--help" ] || [ "$1" == "-h" ]; then
     echo -e "${CYAN}Usage:${NC}"
     echo "  ./install.sh              Install in current directory"
     echo "  ./install.sh [path]       Install in specified directory"
     echo "  ./install.sh --global     Clone to ~/claude-code-virtuoso for reuse"
+    echo "  ./install.sh --force      Auto-update without prompts (for pipe mode)"
     echo ""
     echo -e "${CYAN}Examples:${NC}"
     echo "  ./install.sh              # Install in current project"
     echo "  ./install.sh ~/my-app     # Install in ~/my-app"
     echo "  ./install.sh --global     # Clone for future copying"
+    echo "  curl ... | bash -s -- --force  # Force update via pipe"
     echo ""
     exit 0
 fi
@@ -65,11 +84,17 @@ EXISTING_INSTALL=false
 if [ -d "${INSTALL_DIR}/.claude" ]; then
     echo -e "${YELLOW}⚠ .claude directory already exists in ${INSTALL_DIR}${NC}"
     echo -e "${CYAN}ℹ User data (DECISIONS.md, decisions/, specs/) will be preserved${NC}"
-    read -p "Update existing installation? (y/N): " -n 1 -r
-    echo ""
-    if [[ ! $REPLY =~ ^[Yy]$ ]]; then
-        echo -e "${RED}Installation cancelled.${NC}"
-        exit 1
+    
+    # Auto-update in pipe mode or force mode
+    if [ "$PIPE_MODE" = true ] || [ "$FORCE_MODE" = true ]; then
+        echo -e "${ARROW} Auto-updating existing installation..."
+    else
+        read -p "Update existing installation? (y/N): " -n 1 -r
+        echo ""
+        if [[ ! $REPLY =~ ^[Yy]$ ]]; then
+            echo -e "${RED}Installation cancelled.${NC}"
+            exit 1
+        fi
     fi
     EXISTING_INSTALL=true
     
