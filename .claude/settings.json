@@ -1,4 +1,46 @@
 {
+    "outputStyles": {
+        "concise": {
+            "description": "Brief, direct responses with minimal explanation",
+            "rules": [
+                "Keep responses under 3 sentences unless code is involved",
+                "Skip pleasantries and filler words",
+                "Prioritize actionable information"
+            ]
+        },
+        "detailed": {
+            "description": "Comprehensive explanations with context and examples",
+            "rules": [
+                "Provide thorough explanations",
+                "Include code examples and edge cases",
+                "Explain the 'why' behind decisions"
+            ]
+        },
+        "educational": {
+            "description": "Teaching-focused responses with learning opportunities",
+            "rules": [
+                "Explain concepts step-by-step",
+                "Include analogies and comparisons",
+                "Suggest additional resources"
+            ]
+        }
+    },
+    "keybindings": {
+        "customCommands": {
+            "ctrl+shift+p": {
+                "command": "/polish",
+                "description": "Quick polish current branch"
+            },
+            "ctrl+shift+s": {
+                "command": "/ship-it",
+                "description": "Ship current changes"
+            },
+            "ctrl+shift+i": {
+                "command": "/interview",
+                "description": "Interview mode for new feature"
+            }
+        }
+    },
     "hooks": {
         "SessionStart": [
             {
@@ -7,6 +49,11 @@
                     {
                         "type": "command",
                         "command": "echo '🧠 MEMORY LOADED: Reading decisions from .claude/docs/DECISIONS.md...'; cat .claude/docs/DECISIONS.md"
+                    },
+                    {
+                        "type": "command",
+                        "command": "echo '\n📊 PROJECT STATUS:'; git status --short 2>/dev/null || echo 'Not a git repository'",
+                        "async": true
                     }
                 ]
             }
@@ -18,6 +65,10 @@
                     {
                         "type": "command",
                         "command": "if [[ \"$TOOL_INPUT_COMMAND\" == *\"rm -rf\"* ]] || [[ \"$TOOL_INPUT_COMMAND\" == *\"drop table\"* ]]; then echo '{\"hookSpecificOutput\":{\"hookEventName\":\"PreToolUse\",\"permissionDecision\":\"ask\",\"permissionDecisionReason\":\"⚠️ DESTRUCTIVE COMMAND DETECTED. User confirmation required.\"}}'; else exit 0; fi"
+                    },
+                    {
+                        "type": "command",
+                        "command": "if [[ \"$TOOL_INPUT_COMMAND\" == *\"npm install\"* ]] || [[ \"$TOOL_INPUT_COMMAND\" == *\"pip install\"* ]]; then echo '{\"hookSpecificOutput\":{\"hookEventName\":\"PreToolUse\",\"permissionDecision\":\"ask\",\"permissionDecisionReason\":\"📦 INSTALLING PACKAGES. Confirm dependency addition.\"}}'; else exit 0; fi"
                     }
                 ]
             },
@@ -26,7 +77,11 @@
                 "hooks": [
                     {
                         "type": "command",
-                        "command": "if [[ \"$TOOL_INPUT_FILE_PATH\" == *\".env\"* ]]; then echo '{\"hookSpecificOutput\":{\"hookEventName\":\"PreToolUse\",\"permissionDecision\":\"ask\",\"permissionDecisionReason\":\"⚠️ SENSITIVE FILE EDIT (.env). Confirm secret handling.\"}}'; else exit 0; fi"
+                        "command": "if [[ \"$TOOL_INPUT_FILE_PATH\" == *\".env\"* ]] || [[ \"$TOOL_INPUT_FILE_PATH\" == *\"secrets\"* ]]; then echo '{\"hookSpecificOutput\":{\"hookEventName\":\"PreToolUse\",\"permissionDecision\":\"ask\",\"permissionDecisionReason\":\"⚠️ SENSITIVE FILE EDIT. Confirm secret handling.\"}}'; else exit 0; fi"
+                    },
+                    {
+                        "type": "command",
+                        "command": "if [[ \"$TOOL_INPUT_FILE_PATH\" == *\"package.json\"* ]] || [[ \"$TOOL_INPUT_FILE_PATH\" == *\"requirements.txt\"* ]] || [[ \"$TOOL_INPUT_FILE_PATH\" == *\"Cargo.toml\"* ]]; then echo '{\"hookSpecificOutput\":{\"hookEventName\":\"PreToolUse\",\"permissionDecision\":\"ask\",\"permissionDecisionReason\":\"📦 DEPENDENCY FILE CHANGE. Confirm modification.\"}}'; else exit 0; fi"
                     }
                 ]
             }
@@ -37,7 +92,22 @@
                 "hooks": [
                     {
                         "type": "command",
-                        "command": "if [ -f \"package.json\" ]; then npx prettier --write \"$TOOL_INPUT_FILE_PATH\" > /dev/null 2>&1; fi",
+                        "command": "if [ -f \"package.json\" ] && command -v npx >/dev/null 2>&1; then npx prettier --write \"$TOOL_INPUT_FILE_PATH\" > /dev/null 2>&1; fi",
+                        "async": true
+                    },
+                    {
+                        "type": "command",
+                        "command": "if [[ \"$TOOL_INPUT_FILE_PATH\" == *.py ]]; then if command -v black >/dev/null 2>&1; then black \"$TOOL_INPUT_FILE_PATH\" > /dev/null 2>&1; fi; fi",
+                        "async": true
+                    }
+                ]
+            },
+            {
+                "matcher": "Bash",
+                "hooks": [
+                    {
+                        "type": "command",
+                        "command": "if [[ \"$TOOL_INPUT_COMMAND\" == *\"npm install\"* ]] || [[ \"$TOOL_INPUT_COMMAND\" == *\"pip install\"* ]]; then echo '✅ Packages installed. Run tests to ensure compatibility.'; fi",
                         "async": true
                     }
                 ]

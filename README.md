@@ -1,42 +1,94 @@
 # Claude Code Virtuoso
 
-**An enterprise-grade operating system for Claude Code.**
+> **AI-Powered Engineering Team Orchestrator for Claude Code**
 
-Virtuoso converts the standard Claude Code CLI into a fully managed, context-aware engineering team. It enforces architectural discipline, maintains long-term project memory, and automates quality control—allowing you to focus on high-level strategy while AI handles the execution.
+Transform Claude Code into a coordinated engineering organization. Virtuoso orchestrates 8 specialized AI agents—Product Managers, Architects, QA Engineers, Security Auditors—all working together under a Tech Lead coordinator. Get persistent memory, cross-agent communication, and production-ready quality gates.
 
-> **Philosophy:** User Authority is absolute. Context is persistent. Quality is automated.
+[![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+[![Version](https://img.shields.io/badge/version-2.0-green.svg)](CHANGELOG.md)
+[![Claude Code](https://img.shields.io/badge/Claude%20Code-Compatible-purple.svg)](https://code.claude.com)
 
-## ⚡ Features
+---
+
+## 🎯 What Problem Does This Solve?
+
+**Standard Claude Code:** One AI assistant doing everything  
+**Claude Code Virtuoso:** A complete engineering team with specialized roles
+
+- ❌ **Problem:** Claude forgets decisions between sessions  
+  ✅ **Solution:** ADR-based memory system with automatic context loading
+
+- ❌ **Problem:** No separation of concerns (frontend/backend/QA/security all mixed)  
+  ✅ **Solution:** 8 specialized agents, each expert in their domain
+
+- ❌ **Problem:** No quality gates—code ships without testing/security review  
+  ✅ **Solution:** Mandatory QA + Security checks before deployment
+
+- ❌ **Problem:** No coordination when multiple areas need changes  
+  ✅ **Solution:** Tech Lead orchestrator coordinates multi-agent workflows
+
+---
+
+## ⚡ Core Features
 
 ### 🧠 Persistent Memory System
 
-Claude usually forgets decisions between sessions. Virtuoso introduces a file-based memory system:
+Claude typically forgets decisions between sessions. Virtuoso introduces a file-based memory system:
 
-- **`DECISIONS.md`**: Automatically loaded at every session start. Tracks architectural choices and stack decisions.
+- **`DECISIONS.md`**: Automatically loaded at every session start. Tracks architectural choices, stack decisions, and product priorities.
+- **Impact Tracking**: All decisions tagged with HIGH/MEDIUM/LOW impact and rollback plans.
 - **Context Injection**: Hooks automatically feed project context to Claude before it starts working.
+- **Decision Templates**: Structured ADR (Architecture Decision Records) templates for major decisions.
 
-### 👥 Specialized Sub-Agents
+### 👥 Coordinated Agent System (v2.0)
 
-Instead of one generic assistant, Virtuoso delegates tasks to specialized personas:
+Instead of one generic assistant, Virtuoso orchestrates **8 specialized agents** that collaborate:
 
-- **Product Manager**: Converts raw ideas into structured PRDs.
-- **Tech Lead**: Enforces architectural consistency and stack decisions.
-- **Architects (Front/Back/Mobile)**: Domain-specific experts who don't touch code outside their scope.
-- **QA Engineer**: Writes comprehensive tests and hunts for edge cases.
+| Agent | Role | Key Capability |
+|:------|:-----|:---------------|
+| **@product-manager** | Product Strategy | Interviews you, researches competitors, creates specs |
+| **@tech-lead** | **Agent Orchestrator** | Coordinates all agents, resolves conflicts, makes final calls |
+| **@backend-architect** | API & Database | Designs endpoints, schemas, notifies frontend of changes |
+| **@frontend-architect** | UI/UX & Components | Builds accessible, pixel-perfect interfaces |
+| **@mobile-architect** | Mobile Development | Handles React Native, Expo, native modules |
+| **@qa-engineer** | Testing & Quality | Writes tests, finds edge cases, **blocks bad deploys** |
+| **@security-auditor** | Security | OWASP audits, secret detection, **blocks vulnerabilities** |
+| **@monetization-expert** | Revenue Strategy | Pricing models, feature gating, conversion optimization |
 
-### 🛠️ High-Velocity Skills
+**NEW in v2.0:** Agents now delegate tasks to each other and follow collaboration protocols.
+
+### 🛠️ Production-Ready Skills
 
 Custom slash commands to standardize your workflow:
 
-- `/interview`: Deep-dive requirements gathering before a single line of code is written.
-- `/step-by-step`: Safe execution mode requiring user approval for every atomic action.
-- `/polish`: Autonomous cleanup agent that removes logs, lint errors, and "AI slop".
-- `/ship-it`: Prepares the branch for production (Lint -> Test -> Build -> PR).
+| Skill | Purpose | Required Agents |
+|:------|:--------|:----------------|
+| **`/bootstrap`** | Initialize new project | `@tech-lead` |
+| **`/interview`** | Deep requirements gathering | `@product-manager` (mandatory) |
+| **`/step-by-step`** | Safe execution with approval per step | Context-dependent |
+| **`/polish`** | Remove AI slop, fix lint errors | None (autonomous) |
+| **`/record-decision`** | Save decision to long-term memory | Any agent |
+| **`/ship-it`** | Lint → Test → Security → Build → PR | `@qa-engineer`, `@security-auditor` |
+| **`/guide`** | Interactive onboarding tutorial | None |
+
+**NEW in v2.0:** Comprehensive error handling, recovery options, and success criteria for every skill.
 
 ### 🛡️ Safety & Automation Hooks
 
-- **Guardrails**: Blocks destructive commands (`rm -rf`, `drop table`) and `.env` edits without explicit confirmation.
-- **Auto-Formatting**: Automatically runs Prettier/Linters on modified files in the background.
+**Pre-Tool Use (Guardrails):**
+- 🚨 Destructive commands (`rm -rf`, `drop table`) → Ask for confirmation
+- 🔐 Sensitive files (`.env`, `secrets.json`) → Warn before editing
+- 📦 Package installs (`npm install`, `pip install`) → Confirm dependency addition
+- 📋 Dependency files (`package.json`, `requirements.txt`) → Confirm modification
+
+**Post-Tool Use (Automation):**
+- ✨ Auto-format with Prettier (JavaScript/TypeScript)
+- 🐍 Auto-format with Black (Python)
+- ✅ Confirmation messages for package installations
+
+**Session Start:**
+- 🧠 Load `DECISIONS.md` automatically
+- 📊 Show git status for quick context
 
 ---
 
