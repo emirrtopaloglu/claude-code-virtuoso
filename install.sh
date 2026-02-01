@@ -61,14 +61,34 @@ echo -e "${ARROW} Target directory: ${YELLOW}${INSTALL_DIR}${NC}"
 echo ""
 
 # Check if .claude already exists
+EXISTING_INSTALL=false
 if [ -d "${INSTALL_DIR}/.claude" ]; then
     echo -e "${YELLOW}⚠ .claude directory already exists in ${INSTALL_DIR}${NC}"
-    read -p "Overwrite? (y/N): " -n 1 -r
+    echo -e "${CYAN}ℹ User data (DECISIONS.md, decisions/, specs/) will be preserved${NC}"
+    read -p "Update existing installation? (y/N): " -n 1 -r
     echo ""
     if [[ ! $REPLY =~ ^[Yy]$ ]]; then
         echo -e "${RED}Installation cancelled.${NC}"
         exit 1
     fi
+    EXISTING_INSTALL=true
+    
+    # Backup user data that should be preserved
+    BACKUP_DIR=$(mktemp -d)
+    echo -e "${ARROW} Backing up user data..."
+    
+    # Files/folders to preserve (user's project-specific data)
+    if [ -f "${INSTALL_DIR}/.claude/docs/DECISIONS.md" ]; then
+        cp "${INSTALL_DIR}/.claude/docs/DECISIONS.md" "${BACKUP_DIR}/DECISIONS.md"
+    fi
+    if [ -d "${INSTALL_DIR}/.claude/docs/decisions" ]; then
+        cp -r "${INSTALL_DIR}/.claude/docs/decisions" "${BACKUP_DIR}/decisions"
+    fi
+    if [ -d "${INSTALL_DIR}/.claude/docs/specs" ]; then
+        cp -r "${INSTALL_DIR}/.claude/docs/specs" "${BACKUP_DIR}/specs"
+    fi
+    
+    # Remove old installation
     rm -rf "${INSTALL_DIR}/.claude"
 fi
 
@@ -137,6 +157,29 @@ cp -r "${SOURCE_DIR}/.claude" "${INSTALL_DIR}/"
 
 # Copy CLAUDE.md to project root
 cp "${SOURCE_DIR}/CLAUDE.md" "${INSTALL_DIR}/"
+
+# Restore user data if this was an existing installation
+if [ "$EXISTING_INSTALL" = true ] && [ -n "${BACKUP_DIR}" ] && [ -d "${BACKUP_DIR}" ]; then
+    echo -e "${ARROW} Restoring user data..."
+    
+    if [ -f "${BACKUP_DIR}/DECISIONS.md" ]; then
+        cp "${BACKUP_DIR}/DECISIONS.md" "${INSTALL_DIR}/.claude/docs/DECISIONS.md"
+        echo -e "  ${CHECK} Restored DECISIONS.md"
+    fi
+    if [ -d "${BACKUP_DIR}/decisions" ]; then
+        rm -rf "${INSTALL_DIR}/.claude/docs/decisions"
+        cp -r "${BACKUP_DIR}/decisions" "${INSTALL_DIR}/.claude/docs/decisions"
+        echo -e "  ${CHECK} Restored decisions/"
+    fi
+    if [ -d "${BACKUP_DIR}/specs" ]; then
+        rm -rf "${INSTALL_DIR}/.claude/docs/specs"
+        cp -r "${BACKUP_DIR}/specs" "${INSTALL_DIR}/.claude/docs/specs"
+        echo -e "  ${CHECK} Restored specs/"
+    fi
+    
+    # Cleanup backup
+    rm -rf "${BACKUP_DIR}"
+fi
 
 # Cleanup temp if used
 if [ -n "${TEMP_DIR}" ] && [ -d "${TEMP_DIR}" ]; then
