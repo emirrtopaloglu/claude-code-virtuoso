@@ -1,63 +1,33 @@
 {
-    "outputStyles": {
-        "concise": {
-            "description": "Brief, direct responses with minimal explanation",
-            "rules": [
-                "Keep responses under 3 sentences unless code is involved",
-                "Skip pleasantries and filler words",
-                "Prioritize actionable information"
-            ]
-        },
-        "detailed": {
-            "description": "Comprehensive explanations with context and examples",
-            "rules": [
-                "Provide thorough explanations",
-                "Include code examples and edge cases",
-                "Explain the 'why' behind decisions"
-            ]
-        },
-        "educational": {
-            "description": "Teaching-focused responses with learning opportunities",
-            "rules": [
-                "Explain concepts step-by-step",
-                "Include analogies and comparisons",
-                "Suggest additional resources"
-            ]
-        }
-    },
-    "keybindings": {
-        "customCommands": {
-            "ctrl+shift+v": {
-                "command": "/vision",
-                "description": "Product discovery for new projects"
-            },
-            "ctrl+shift+p": {
-                "command": "/polish",
-                "description": "Quick polish current branch"
-            },
-            "ctrl+shift+s": {
-                "command": "/ship-it",
-                "description": "Ship current changes"
-            },
-            "ctrl+shift+i": {
-                "command": "/interview",
-                "description": "Interview mode for new feature"
-            }
-        }
-    },
     "hooks": {
         "SessionStart": [
             {
-                "matcher": "startup",
+                "matcher": "startup|resume",
                 "hooks": [
                     {
                         "type": "command",
-                        "command": "echo '🧠 LOADING CLAUDE CODE VIRTUOSO...'; echo ''; echo '📘 SYSTEM:'; head -50 CLAUDE.md 2>/dev/null || echo 'CLAUDE.md not found'; echo ''; echo '📋 DECISIONS:'; cat .claude/docs/DECISIONS.md 2>/dev/null || echo 'No decisions yet'"
+                        "command": "echo '🚀 CLAUDE CODE VIRTUOSO - AI ORCHESTRATOR SYSTEM'; echo '═══════════════════════════════════════════════'; echo ''; echo '📘 SYSTEM PROTOCOL:'; head -100 CLAUDE.md 2>/dev/null || echo '⚠️  CLAUDE.md not found - system guidelines missing'; echo ''; echo '═══════════════════════════════════════════════'; echo '📋 ARCHITECTURAL DECISIONS:'; cat .claude/docs/DECISIONS.md 2>/dev/null || echo '📝 No decisions recorded yet'; echo ''; echo '═══════════════════════════════════════════════'",
+                        "statusMessage": "Loading system protocols..."
                     },
                     {
                         "type": "command",
-                        "command": "echo '\n📊 PROJECT STATUS:'; git status --short 2>/dev/null || echo 'Not a git repository'",
-                        "async": true
+                        "command": "echo '📍 PROJECT STATUS:'; echo ''; if [ -f ROADMAP.md ]; then echo '✅ ROADMAP.md exists'; head -20 ROADMAP.md; else echo '❌ ROADMAP.md MISSING - Required by orchestrator'; fi; echo ''; if [ -f TODO.md ]; then echo '✅ TODO.md exists'; head -15 TODO.md; else echo '❌ TODO.md MISSING - Required by orchestrator'; fi; echo ''; echo '📊 Git Status:'; git status --short 2>/dev/null || echo 'Not a git repository'; echo ''; echo '🔀 Current Branch:'; git branch --show-current 2>/dev/null || echo 'N/A'",
+                        "statusMessage": "Checking project status..."
+                    },
+                    {
+                        "type": "command",
+                        "command": "if [ ! -f ROADMAP.md ] || [ ! -f TODO.md ]; then echo '⚠️  CRITICAL: ROADMAP.md or TODO.md missing. Per orchestrator protocol, these MUST exist before any work begins. Create them immediately.'; fi",
+                        "statusMessage": "Validating required files..."
+                    }
+                ]
+            }
+        ],
+        "UserPromptSubmit": [
+            {
+                "hooks": [
+                    {
+                        "type": "command",
+                        "command": "INPUT=$(cat); PROMPT=$(echo \"$INPUT\" | jq -r '.prompt'); if echo \"$PROMPT\" | grep -qi 'implement\\|build\\|create\\|add.*feature'; then if [ ! -d .claude/docs/specs ]; then echo '{\"hookSpecificOutput\":{\"hookEventName\":\"UserPromptSubmit\",\"additionalContext\":\"⚠️ PLAN MODE REQUIRED: User requested implementation work. Per orchestrator protocol: 1) Check if spec exists in .claude/docs/specs/ 2) Check if task exists in TODO.md 3) If not, enter Plan Mode and create spec/task first 4) Get user approval 5) Only then proceed with implementation. NO IMPLEMENTATION WITHOUT SPEC/TASK.\"}}'; fi; fi; exit 0"
                     }
                 ]
             }
@@ -68,41 +38,99 @@
                 "hooks": [
                     {
                         "type": "command",
-                        "command": "if [[ \"$TOOL_INPUT_COMMAND\" == *\"rm -rf\"* ]] || [[ \"$TOOL_INPUT_COMMAND\" == *\"drop table\"* ]]; then echo '{\"hookSpecificOutput\":{\"hookEventName\":\"PreToolUse\",\"permissionDecision\":\"ask\",\"permissionDecisionReason\":\"⚠️ DESTRUCTIVE COMMAND DETECTED. User confirmation required.\"}}'; else exit 0; fi"
+                        "command": "INPUT=$(cat); CMD=$(echo \"$INPUT\" | jq -r '.tool_input.command'); if echo \"$CMD\" | grep -qE 'rm -rf|sudo rm|format|dd if='; then jq -n --arg cmd \"$CMD\" '{hookSpecificOutput:{hookEventName:\"PreToolUse\",permissionDecision:\"deny\",permissionDecisionReason:(\"🚨 DESTRUCTIVE COMMAND BLOCKED: \" + $cmd + \" - This command could cause irreversible damage. Use with extreme caution.\")}}'; exit 0; fi; exit 0",
+                        "statusMessage": "Checking for destructive commands..."
                     },
                     {
                         "type": "command",
-                        "command": "if [[ \"$TOOL_INPUT_COMMAND\" == *\"npm install\"* ]] || [[ \"$TOOL_INPUT_COMMAND\" == *\"pip install\"* ]]; then echo '{\"hookSpecificOutput\":{\"hookEventName\":\"PreToolUse\",\"permissionDecision\":\"ask\",\"permissionDecisionReason\":\"📦 INSTALLING PACKAGES. Confirm dependency addition.\"}}'; else exit 0; fi"
+                        "command": "INPUT=$(cat); CMD=$(echo \"$INPUT\" | jq -r '.tool_input.command'); if echo \"$CMD\" | grep -qE 'npm install|yarn add|pip install|gem install|composer require'; then jq -n --arg cmd \"$CMD\" '{hookSpecificOutput:{hookEventName:\"PreToolUse\",permissionDecision:\"ask\",permissionDecisionReason:(\"📦 PACKAGE INSTALLATION: \" + $cmd + \" - New dependency detected. Verify compatibility and update DECISIONS.md after approval.\")}}'; exit 0; fi; exit 0",
+                        "statusMessage": "Validating package installation..."
+                    },
+                    {
+                        "type": "command",
+                        "command": "INPUT=$(cat); CMD=$(echo \"$INPUT\" | jq -r '.tool_input.command'); if echo \"$CMD\" | grep -qE 'curl.*\\||wget.*\\||bash.*<\\(curl|sh.*<\\(wget'; then jq -n '{hookSpecificOutput:{hookEventName:\"PreToolUse\",permissionDecision:\"deny\",permissionDecisionReason:\"🚨 SECURITY RISK: Piping remote scripts directly to shell is dangerous. Download and review the script first.\"}}'; exit 0; fi; exit 0",
+                        "statusMessage": "Checking for unsafe remote script execution..."
+                    },
+                    {
+                        "type": "command",
+                        "command": "INPUT=$(cat); CMD=$(echo \"$INPUT\" | jq -r '.tool_input.command'); if echo \"$CMD\" | grep -qE 'chmod 777|chmod -R 777'; then jq -n '{hookSpecificOutput:{hookEventName:\"PreToolUse\",permissionDecision:\"deny\",permissionDecisionReason:\"🚨 SECURITY RISK: chmod 777 creates world-writable files. Use more restrictive permissions.\"}}'; exit 0; fi; exit 0"
                     }
                 ]
             },
             {
-                "matcher": "Edit|Write",
+                "matcher": "Write|Edit",
                 "hooks": [
                     {
                         "type": "command",
-                        "command": "if [[ \"$TOOL_INPUT_FILE_PATH\" == *\".env\"* ]] || [[ \"$TOOL_INPUT_FILE_PATH\" == *\"secrets\"* ]]; then echo '{\"hookSpecificOutput\":{\"hookEventName\":\"PreToolUse\",\"permissionDecision\":\"ask\",\"permissionDecisionReason\":\"⚠️ SENSITIVE FILE EDIT. Confirm secret handling.\"}}'; else exit 0; fi"
+                        "command": "INPUT=$(cat); FILE=$(echo \"$INPUT\" | jq -r '.tool_input.file_path // .tool_input.filePath'); if echo \"$FILE\" | grep -qE '\\.env|\\.env\\..*|.*secret.*|.*password.*|.*\\.key|.*\\.pem|id_rsa|.*credentials.*'; then jq -n --arg file \"$FILE\" '{hookSpecificOutput:{hookEventName:\"PreToolUse\",permissionDecision:\"ask\",permissionDecisionReason:(\"🔐 SENSITIVE FILE: \" + $file + \" - Contains secrets or credentials. Ensure no sensitive data is committed.\")}}'; exit 0; fi; exit 0",
+                        "statusMessage": "Checking for sensitive files..."
                     },
                     {
                         "type": "command",
-                        "command": "if [[ \"$TOOL_INPUT_FILE_PATH\" == *\"package.json\"* ]] || [[ \"$TOOL_INPUT_FILE_PATH\" == *\"requirements.txt\"* ]] || [[ \"$TOOL_INPUT_FILE_PATH\" == *\"Cargo.toml\"* ]]; then echo '{\"hookSpecificOutput\":{\"hookEventName\":\"PreToolUse\",\"permissionDecision\":\"ask\",\"permissionDecisionReason\":\"📦 DEPENDENCY FILE CHANGE. Confirm modification.\"}}'; else exit 0; fi"
+                        "command": "INPUT=$(cat); FILE=$(echo \"$INPUT\" | jq -r '.tool_input.file_path // .tool_input.filePath'); if echo \"$FILE\" | grep -qE 'package\\.json|package-lock\\.json|yarn\\.lock|requirements\\.txt|Pipfile\\.lock|Gemfile\\.lock|Cargo\\.toml|Cargo\\.lock|composer\\.json|go\\.mod|pom\\.xml'; then jq -n --arg file \"$FILE\" '{hookSpecificOutput:{hookEventName:\"PreToolUse\",permissionDecision:\"ask\",permissionDecisionReason:(\"📦 DEPENDENCY FILE: \" + $file + \" - Changes may affect project dependencies. Record decision after approval.\")}}'; exit 0; fi; exit 0",
+                        "statusMessage": "Checking dependency file modifications..."
+                    },
+                    {
+                        "type": "command",
+                        "command": "INPUT=$(cat); FILE=$(echo \"$INPUT\" | jq -r '.tool_input.file_path // .tool_input.filePath'); if echo \"$FILE\" | grep -qE 'CLAUDE\\.md|DECISIONS\\.md|ROADMAP\\.md|TODO\\.md'; then jq -n --arg file \"$FILE\" '{hookSpecificOutput:{hookEventName:\"PreToolUse\",permissionDecision:\"ask\",permissionDecisionReason:(\"📋 ORCHESTRATOR CORE FILE: \" + $file + \" - Critical system file. Changes affect orchestrator behavior.\")}}'; exit 0; fi; exit 0"
+                    },
+                    {
+                        "type": "command",
+                        "command": "INPUT=$(cat); FILE=$(echo \"$INPUT\" | jq -r '.tool_input.file_path // .tool_input.filePath'); if echo \"$FILE\" | grep -q '\\.\\./'; then jq -n '{hookSpecificOutput:{hookEventName:\"PreToolUse\",permissionDecision:\"deny\",permissionDecisionReason:\"🚨 PATH TRAVERSAL DETECTED: File path contains (..). This could access files outside the project directory.\"}}'; exit 0; fi; exit 0"
+                    }
+                ]
+            },
+            {
+                "matcher": "mcp__.*",
+                "hooks": [
+                    {
+                        "type": "command",
+                        "command": "INPUT=$(cat); TOOL=$(echo \"$INPUT\" | jq -r '.tool_name'); echo \"📡 MCP TOOL: $TOOL - MCP server tool accessed\" >&2; exit 0",
+                        "statusMessage": "Logging MCP tool usage..."
+                    }
+                ]
+            }
+        ],
+        "PermissionRequest": [
+            {
+                "matcher": "Bash",
+                "hooks": [
+                    {
+                        "type": "command",
+                        "command": "INPUT=$(cat); CMD=$(echo \"$INPUT\" | jq -r '.tool_input.command'); if echo \"$CMD\" | grep -qE '^(npm test|yarn test|npm run test|pytest|cargo test|go test|mvn test)'; then jq -n '{hookSpecificOutput:{hookEventName:\"PermissionRequest\",decision:{behavior:\"allow\",updatedPermissions:[{type:\"toolAlwaysAllow\",tool:\"Bash\"}]}}}'; exit 0; fi; exit 0"
                     }
                 ]
             }
         ],
         "PostToolUse": [
             {
-                "matcher": "Edit|Write",
+                "matcher": "Write|Edit",
                 "hooks": [
                     {
                         "type": "command",
-                        "command": "if [ -f \"package.json\" ] && command -v npx >/dev/null 2>&1; then npx prettier --write \"$TOOL_INPUT_FILE_PATH\" > /dev/null 2>&1; fi",
-                        "async": true
+                        "command": "INPUT=$(cat); FILE=$(echo \"$INPUT\" | jq -r '.tool_input.file_path // .tool_input.filePath'); if echo \"$FILE\" | grep -qE '\\.(js|jsx|ts|tsx|json|css|scss|md)$'; then if [ -f \"package.json\" ] && command -v npx >/dev/null 2>&1; then npx prettier --write \"$FILE\" > /dev/null 2>&1 || true; fi; fi; exit 0",
+                        "async": true,
+                        "timeout": 30,
+                        "statusMessage": "Formatting with Prettier..."
                     },
                     {
                         "type": "command",
-                        "command": "if [[ \"$TOOL_INPUT_FILE_PATH\" == *.py ]]; then if command -v black >/dev/null 2>&1; then black \"$TOOL_INPUT_FILE_PATH\" > /dev/null 2>&1; fi; fi",
-                        "async": true
+                        "command": "INPUT=$(cat); FILE=$(echo \"$INPUT\" | jq -r '.tool_input.file_path // .tool_input.filePath'); if echo \"$FILE\" | grep -qE '\\.py$'; then if command -v black >/dev/null 2>&1; then black \"$FILE\" > /dev/null 2>&1 || true; fi; fi; exit 0",
+                        "async": true,
+                        "timeout": 30,
+                        "statusMessage": "Formatting with Black..."
+                    },
+                    {
+                        "type": "command",
+                        "command": "INPUT=$(cat); FILE=$(echo \"$INPUT\" | jq -r '.tool_input.file_path // .tool_input.filePath'); if echo \"$FILE\" | grep -qE '\\.rs$'; then if command -v rustfmt >/dev/null 2>&1; then rustfmt \"$FILE\" > /dev/null 2>&1 || true; fi; fi; exit 0",
+                        "async": true,
+                        "timeout": 30
+                    },
+                    {
+                        "type": "command",
+                        "command": "INPUT=$(cat); FILE=$(echo \"$INPUT\" | jq -r '.tool_input.file_path // .tool_input.filePath'); if echo \"$FILE\" | grep -qE '\\.(go)$'; then if command -v gofmt >/dev/null 2>&1; then gofmt -w \"$FILE\" > /dev/null 2>&1 || true; fi; fi; exit 0",
+                        "async": true,
+                        "timeout": 30
                     }
                 ]
             },
@@ -111,8 +139,112 @@
                 "hooks": [
                     {
                         "type": "command",
-                        "command": "if [[ \"$TOOL_INPUT_COMMAND\" == *\"npm install\"* ]] || [[ \"$TOOL_INPUT_COMMAND\" == *\"pip install\"* ]]; then echo '✅ Packages installed. Run tests to ensure compatibility.'; fi",
+                        "command": "INPUT=$(cat); CMD=$(echo \"$INPUT\" | jq -r '.tool_input.command'); if echo \"$CMD\" | grep -qE 'npm install|yarn add|pip install'; then echo '✅ Packages installed. Consider running tests to ensure compatibility.' >&2; fi; exit 0",
                         "async": true
+                    }
+                ]
+            },
+            {
+                "matcher": "Write",
+                "hooks": [
+                    {
+                        "type": "command",
+                        "command": "INPUT=$(cat); FILE=$(echo \"$INPUT\" | jq -r '.tool_input.file_path'); if echo \"$FILE\" | grep -qE '\\.claude/docs/specs/.*\\.md$'; then jq -n --arg file \"$FILE\" '{hookSpecificOutput:{hookEventName:\"PostToolUse\",additionalContext:(\"✅ SPEC CREATED: \" + $file + \" - Specification document created. Update TODO.md with corresponding tasks.\")}}'; exit 0; fi; exit 0"
+                    }
+                ]
+            }
+        ],
+        "PostToolUseFailure": [
+            {
+                "matcher": "Bash",
+                "hooks": [
+                    {
+                        "type": "command",
+                        "command": "INPUT=$(cat); CMD=$(echo \"$INPUT\" | jq -r '.tool_input.command'); ERROR=$(echo \"$INPUT\" | jq -r '.error'); echo \"❌ Command failed: $CMD\" >&2; echo \"Error: $ERROR\" >&2; exit 0",
+                        "statusMessage": "Logging command failure..."
+                    }
+                ]
+            },
+            {
+                "matcher": "Write|Edit",
+                "hooks": [
+                    {
+                        "type": "command",
+                        "command": "INPUT=$(cat); FILE=$(echo \"$INPUT\" | jq -r '.tool_input.file_path // .tool_input.filePath'); echo \"❌ File operation failed: $FILE\" >&2; exit 0"
+                    }
+                ]
+            }
+        ],
+        "Stop": [
+            {
+                "hooks": [
+                    {
+                        "type": "command",
+                        "command": "INPUT=$(cat); STOP_ACTIVE=$(echo \"$INPUT\" | jq -r '.stop_hook_active'); if [ \"$STOP_ACTIVE\" = \"true\" ]; then exit 0; fi; if [ -f TODO.md ]; then IN_PROGRESS=$(grep -c '\\[.*\\] In Progress' TODO.md 2>/dev/null || echo '0'); if [ \"$IN_PROGRESS\" -gt 0 ]; then jq -n '{decision:\"block\",reason:\"📋 INCOMPLETE TASKS: There are still tasks marked as (In Progress) in TODO.md. Complete or update them before stopping.\"}'; exit 0; fi; fi; exit 0",
+                        "statusMessage": "Checking for incomplete tasks..."
+                    }
+                ]
+            }
+        ],
+        "SubagentStart": [
+            {
+                "hooks": [
+                    {
+                        "type": "command",
+                        "command": "INPUT=$(cat); AGENT_TYPE=$(echo \"$INPUT\" | jq -r '.agent_type'); AGENT_ID=$(echo \"$INPUT\" | jq -r '.agent_id'); echo \"🤖 Subagent started: $AGENT_TYPE (ID: $AGENT_ID)\" >&2; exit 0",
+                        "statusMessage": "Tracking subagent..."
+                    }
+                ]
+            }
+        ],
+        "SubagentStop": [
+            {
+                "hooks": [
+                    {
+                        "type": "command",
+                        "command": "INPUT=$(cat); AGENT_TYPE=$(echo \"$INPUT\" | jq -r '.agent_type'); AGENT_ID=$(echo \"$INPUT\" | jq -r '.agent_id'); echo \"✅ Subagent completed: $AGENT_TYPE (ID: $AGENT_ID)\" >&2; exit 0"
+                    }
+                ]
+            }
+        ],
+        "Notification": [
+            {
+                "matcher": "permission_prompt",
+                "hooks": [
+                    {
+                        "type": "command",
+                        "command": "INPUT=$(cat); MSG=$(echo \"$INPUT\" | jq -r '.message'); echo \"🔔 Permission required: $MSG\" >&2; exit 0"
+                    }
+                ]
+            },
+            {
+                "matcher": "idle_prompt",
+                "hooks": [
+                    {
+                        "type": "command",
+                        "command": "echo '💤 Claude is idle and awaiting your input' >&2; exit 0"
+                    }
+                ]
+            }
+        ],
+        "PreCompact": [
+            {
+                "hooks": [
+                    {
+                        "type": "command",
+                        "command": "INPUT=$(cat); TRIGGER=$(echo \"$INPUT\" | jq -r '.trigger'); echo \"📦 Compacting conversation (trigger: $TRIGGER)\" >&2; if [ -f ROADMAP.md ] && [ -f TODO.md ]; then echo 'IMPORTANT CONTEXT: ROADMAP.md and TODO.md contain critical project state. Preserve this context during compaction.'; fi; exit 0",
+                        "statusMessage": "Preparing for compaction..."
+                    }
+                ]
+            }
+        ],
+        "SessionEnd": [
+            {
+                "hooks": [
+                    {
+                        "type": "command",
+                        "command": "INPUT=$(cat); REASON=$(echo \"$INPUT\" | jq -r '.reason'); echo '' >&2; echo '═══════════════════════════════════════════════' >&2; echo '👋 Claude Code Virtuoso Session Ending' >&2; echo \"Reason: $REASON\" >&2; if [ -f TODO.md ]; then IN_PROGRESS=$(grep -c '\\[.*\\] In Progress' TODO.md 2>/dev/null || echo '0'); echo \"Tasks in progress: $IN_PROGRESS\" >&2; fi; echo '═══════════════════════════════════════════════' >&2; exit 0",
+                        "statusMessage": "Cleaning up session..."
                     }
                 ]
             }
