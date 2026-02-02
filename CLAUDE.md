@@ -389,8 +389,8 @@ mkdir .claude  # Fails if already exists
 
 At the start of every session:
 
-- [x] DECISIONS.md auto-loaded (SessionStart hook)
-- [x] Git status checked (SessionStart hook)
+- [ ] DECISIONS.md auto-loaded (SessionStart hook)
+- [ ] Git status checked (SessionStart hook)
 - [ ] Review current branch and changes
 - [ ] Check for any test failures
 - [ ] Review user's request and identify required agents
