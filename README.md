@@ -72,6 +72,7 @@ chmod +x install.sh
 ```
 your-project/
 ├── CLAUDE.md                    # Main orchestration system (auto-loaded)
+├── HOOKS.md                     # Hooks system documentation
 └── .claude/
     ├── settings.json            # Hooks & safety configuration
     ├── agents/                  # 8 specialized AI agents
@@ -254,25 +255,105 @@ Save decisions anytime:
 
 ---
 
-## 🛡 Safety Features
+## 🛡 Safety & Automation (Hooks System)
 
-### Pre-Tool Guardrails
+Virtuoso includes a comprehensive hooks system that enforces security, quality, and workflow best practices at every stage of development. See [HOOKS.md](HOOKS.md) for complete documentation.
 
-Virtuoso asks for confirmation before:
-- 🚨 Destructive commands (`rm -rf`, `drop table`)
-- 🔐 Sensitive file edits (`.env`, secrets)
-- 📦 Package installations (`npm install`, `pip install`)
-- 📋 Dependency file changes (`package.json`)
+### 🚀 Session Management
 
-### Post-Tool Automation
+**Automatic at startup:**
+- ✅ Loads CLAUDE.md system guidelines
+- ✅ Loads DECISIONS.md memory
+- ✅ Validates ROADMAP.md exists
+- ✅ Validates TODO.md exists
+- ✅ Shows git status and branch
+- ⚠️ Warns if required files are missing
 
-After editing files:
-- ✨ Auto-format with Prettier (JS/TS)
-- 🐍 Auto-format with Black (Python)
+### 🛡️ Security Guardrails
+
+**Destructive Commands (Blocked):**
+- 🚨 `rm -rf` - Recursive force deletion
+- 🚨 `sudo rm` - Elevated deletion
+- 🚨 `format`, `dd if=` - Disk operations
+- 🚨 `curl ... | bash` - Remote script execution
+- 🚨 `chmod 777` - Insecure permissions
+
+**Sensitive Files (Ask First):**
+- 🔐 `.env` files and environment variables
+- 🔐 Files with "secret", "password", "credentials"
+- 🔐 SSH keys (`.pem`, `id_rsa`)
+- 📦 Dependency files (`package.json`, `requirements.txt`)
+- 📋 Core system files (`CLAUDE.md`, `DECISIONS.md`, `ROADMAP.md`)
+
+**Path Traversal Protection:**
+- 🚫 Blocks `../` in file paths
+- 🚫 Prevents access outside project directory
+
+### 🎨 Auto-Formatting
+
+After file changes:
+- ✨ **Prettier** - JavaScript, TypeScript, JSON, CSS, Markdown
+- 🐍 **Black** - Python
+- 🦀 **rustfmt** - Rust
+- 🐹 **gofmt** - Go
+
+*All formatters run asynchronously (non-blocking)*
+
+### 📋 Workflow Enforcement
+
+**Plan Mode Protection:**
+- Detects implementation requests without specs
+- Injects Plan Mode reminder
+- Enforces spec-driven development
+
+**Task Completion Validation:**
+- Checks TODO.md before stopping
+- Blocks stopping with incomplete tasks
+- Prevents premature session termination
+
+**Package Installation:**
+- 📦 Asks for confirmation
+- 📝 Reminds to update DECISIONS.md
+- ✅ Auto-approves test commands
+
+### 🤖 Agent Lifecycle Tracking
+
+- 📊 Logs all subagent starts/stops
+- 🆔 Tracks agent IDs and types
+- 🔍 Monitors agent interactions
+
+### 🔔 Smart Notifications
+
+- Permission prompts
+- Idle state detection
+- Auth success confirmations
+- Critical system events
+
+### 13 Hook Events Covered
+
+1. **SessionStart** - Load protocols, validate structure
+2. **UserPromptSubmit** - Enforce Plan Mode
+3. **PreToolUse** - Security validation
+4. **PermissionRequest** - Auto-approvals
+5. **PostToolUse** - Auto-formatting
+6. **PostToolUseFailure** - Error logging
+7. **Stop** - Task completion check
+8. **SubagentStart** - Agent tracking
+9. **SubagentStop** - Agent completion
+10. **Notification** - System events
+11. **PreCompact** - Context preservation
+12. **SessionEnd** - Cleanup
+13. **MCP Tools** - Server tool logging
+
+**Full Documentation:** [HOOKS.md](HOOKS.md)
 
 ---
 
-## ⚙️ Configuration
+## 🎯 Memory System
+
+Virtuoso maintains persistent memory across sessions through **Architecture Decision Records (ADRs)**.
+
+### How It Works
 
 ### Customize Agents
 
@@ -303,9 +384,10 @@ Each skill is in `.claude/skills/[name]/SKILL.md`. Edit to:
 
 | Document | Purpose |
 |:---------|:--------|
-| [CLAUDE.md](CLAUDE.md) | Main orchestration system |
+| [CLAUDE.md](CLAUDE.md) | Main orchestration system & agent protocols |
+| [HOOKS.md](HOOKS.md) | Complete hooks system reference |
 | [MANUAL.md](.claude/docs/MANUAL.md) | Detailed user guide |
-| [DECISIONS.md](.claude/docs/DECISIONS.md) | Memory system |
+| [DECISIONS.md](.claude/docs/DECISIONS.md) | Memory system (ADRs) |
 
 ---
 
