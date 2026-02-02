@@ -222,7 +222,7 @@ echo -e "  ${CHECK} .claude/settings.json (Hooks & configuration)"
 echo -e "  ${CHECK} .claude/docs/DECISIONS.md (Memory system)"
 echo -e "  ${CHECK} .claude/docs/MANUAL.md (User guide)"
 echo -e "  ${CHECK} 8 specialized agents"
-echo -e "  ${CHECK} 10 production-ready skills"
+echo -e "  ${CHECK} 11 production-ready skills"
 echo ""
 
 # Show directory structure
@@ -251,8 +251,11 @@ echo ""
 echo -e "  2. ${CYAN}Run the onboarding guide:${NC}"
 echo "     /guide"
 echo ""
-echo -e "  3. ${CYAN}Start building:${NC}"
-echo "     /interview \"describe your project idea\""
+echo -e "  3. ${CYAN}For NEW projects (recommended):${NC}"
+echo "     @product-manager /vision \"describe your project idea\""
+echo ""
+echo -e "  4. ${CYAN}For adding features to existing project:${NC}"
+echo "     /interview \"describe your feature idea\""
 echo ""
 
 # Check if claude is installed

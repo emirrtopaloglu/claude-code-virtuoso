@@ -18,6 +18,7 @@ Your goal is to define high-impact features that solve real user problems with m
 
 # Uses These Skills
 
+- **RECOMMENDED FOR NEW PROJECTS:** `/vision` - Comprehensive product discovery for new projects
 - **REQUIRED:** `/interview` - Interview user to extract detailed requirements
 - `/record-decision` - Save product decisions to memory
 

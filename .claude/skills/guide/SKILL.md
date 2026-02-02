@@ -19,12 +19,13 @@ You are an Onboarding Specialist. Quickly orient new users to Claude Code Virtuo
 🚀 QUICK START
 
 Essential Commands:
-• /bootstrap    → Start a new project
+• /vision       → Plan project from scratch (RECOMMENDED)
+• /bootstrap    → Start a new project (Scaffold)
 • /interview    → Define a feature
 • /polish       → Clean up code
 • /ship-it      → Deploy changes
 
-Try now: /interview "build a login page"
+Try now: @product-manager /vision "my startup idea"
 ```
 
 ## Level 2: Intermediate

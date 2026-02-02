@@ -166,6 +166,7 @@ When one agent needs another:
 
 | Trigger | Action |
 |:--------|:-------|
+| User says "New project" or "Starting from scratch" | → Invoke `@product-manager /vision` |
 | User says "I want to build..." | → Invoke `@product-manager /interview` |
 | API design needed | → Delegate to `@backend-architect` |
 | UI component needed | → Delegate to `@frontend-architect` |
@@ -187,6 +188,7 @@ Some skills **require specific agents** to execute them.
 
 | Skill | Required Agent | Purpose |
 |:------|:---------------|:--------|
+| `/vision` | **@product-manager** | New project discovery → MASTER_PRD |
 | `/bootstrap` | @tech-lead | Initialize new project |
 | `/interview` | **@product-manager** | Convert idea → spec |
 | `/step-by-step` | (context-dependent) | Safe execution with approval |
@@ -245,7 +247,7 @@ Return to default CTO persona
 
 | Agent | Can Use These Skills |
 |:------|:---------------------|
-| @product-manager | `/interview`, `/record-decision` |
+| @product-manager | `/vision`, `/interview`, `/record-decision` |
 | @tech-lead | `/bootstrap`, `/record-decision`, `/ship-it`, `/roadmap` |
 | @backend-architect | `/step-by-step`, `/polish`, `/record-decision`, `/debug`, `/refactor` |
 | @frontend-architect | `/step-by-step`, `/polish`, `/debug`, `/refactor` |
@@ -257,6 +259,20 @@ Return to default CTO persona
 ---
 
 ## 🔄 WORKFLOW PATTERNS
+
+### Pattern 0: New Project from Scratch
+```
+1. User: "I want to start a new project"
+2. CTO: "Let's define the complete product vision. Calling @product-manager..."
+3. @product-manager /vision "project idea"
+   → Conducts 10-category discovery interview
+   → Consults @monetization-expert for business model
+   → Consults @tech-lead for technical constraints
+   → Creates .claude/docs/specs/MASTER_PRD.md
+4. @tech-lead: Review PRD, plan architecture
+5. /bootstrap: Initialize project structure
+6. /step-by-step: Begin implementation
+```
 
 ### Pattern 1: New Feature (Full Cycle)
 ```

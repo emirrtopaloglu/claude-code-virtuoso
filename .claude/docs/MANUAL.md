@@ -9,7 +9,7 @@ Virtuoso transforms Claude Code into a coordinated team of specialized AI agents
 - 👥 **8 Specialized Agents:** Each expert in their domain (Product, Backend, Frontend, Mobile, QA, Security, Monetization)
 - 🎯 **Agent Orchestration:** Tech Lead coordinates multi-agent workflows
 - 🛡️ **Quality Gates:** Automatic QA and Security checks before deployment
-- 🔄 **Standardized Workflows:** 10 production-ready skills for common tasks
+- 🔄 **Standardized Workflows:** 11 production-ready skills for common tasks
 - 📋 **Cross-Agent Communication:** Agents notify each other when changes affect their domain
 
 **Built for:** Software engineers, CTOs, and technical founders who want AI assistance that understands software architecture, not just code syntax.
@@ -18,13 +18,14 @@ Virtuoso transforms Claude Code into a coordinated team of specialized AI agents
 
 ## 🚦 QUICK START
 
-1. **Start New Project:** `/bootstrap`
-2. **Define a Feature:** `/interview [idea]`
-3. **Check Progress:** `/roadmap`
-4. **Debug Issues:** `/debug [problem]`
-5. **Refactor Code:** `/refactor [target]`
-6. **Polish Code:** `/polish`
-7. **Ship to Production:** `/ship-it`
+1. **Plan New Project:** `@product-manager /vision [idea]` (NEW)
+2. **Scaffold Project:** `/bootstrap`
+3. **Define a Feature:** `/interview [idea]`
+4. **Check Progress:** `/roadmap`
+5. **Debug Issues:** `/debug [problem]`
+6. **Refactor Code:** `/refactor [target]`
+7. **Polish Code:** `/polish`
+8. **Ship to Production:** `/ship-it`
 
 ---
 
@@ -66,6 +67,24 @@ Skills are reusable workflows triggered with `/command-name`.
 ```
 /bootstrap
 ```
+
+---
+
+### 🔭 `/vision [idea]` (NEW)
+**Purpose:** Comprehensive product discovery for new projects.  
+**Requires:** `@product-manager` agent  
+**What it does:**
+- Conducts a 10-category deep-dive interview (Visionary Prompt)
+- Explores Problem, Audience, MVP, UX, Business Model, Tech Constraints, etc.
+- Consults `@monetization-expert` and `@tech-lead` automatically
+- Generates a complete `MASTER_PRD.md`
+
+**Usage:**
+```
+@product-manager /vision "I want to build a fitness social network"
+```
+
+**Output:** `.claude/docs/specs/MASTER_PRD.md`
 
 ---
 

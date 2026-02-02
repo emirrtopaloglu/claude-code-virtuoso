@@ -27,6 +27,10 @@
     },
     "keybindings": {
         "customCommands": {
+            "ctrl+shift+v": {
+                "command": "/vision",
+                "description": "Product discovery for new projects"
+            },
             "ctrl+shift+p": {
                 "command": "/polish",
                 "description": "Quick polish current branch"
