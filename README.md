@@ -7,7 +7,7 @@ Transform Claude Code into a coordinated engineering organization. Virtuoso orch
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 [![Version](https://img.shields.io/badge/version-2.0-green.svg)](CHANGELOG.md)
 [![Claude Code](https://img.shields.io/badge/Claude%20Code-Compatible-purple.svg)](https://claude.ai)
-[![Skills](https://img.shields.io/badge/skills-10-orange.svg)](#-available-skills)
+[![Skills](https://img.shields.io/badge/skills-11-orange.svg)](#-available-skills)
 [![Agents](https://img.shields.io/badge/agents-8-blue.svg)](#-agent-team)
 
 ---
