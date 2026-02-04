@@ -1,0 +1,114 @@
+{
+  "name": "claude-code-virtuoso",
+  "version": "2.0.0",
+  "description": "AI-Powered Engineering Team Orchestrator - Transform Claude Code into a coordinated engineering organization with 8 specialized AI agents working together under a Tech Lead coordinator",
+  "author": {
+    "name": "Emir Topaloglu",
+    "email": "contact@emirtopaloglu.com",
+    "url": "https://github.com/emirrtopaloglu"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/emirrtopaloglu/claude-code-virtuoso.git"
+  },
+  "bugs": {
+    "url": "https://github.com/emirrtopaloglu/claude-code-virtuoso/issues"
+  },
+  "homepage": "https://github.com/emirrtopaloglu/claude-code-virtuoso#readme",
+  "license": "MIT",
+  "categories": [
+    "orchestration",
+    "workflow",
+    "agents",
+    "productivity",
+    "development"
+  ],
+  "keywords": [
+    "multi-agent",
+    "ai-agents",
+    "orchestration",
+    "software-development",
+    "hooks",
+    "productivity",
+    "agentic-coding",
+    "code-orchestration",
+    "agent-coordination",
+    "development-workflow"
+  ],
+  "capabilities": {
+    "agents": 8,
+    "skills": 11,
+    "hooks": 13,
+    "templates": 3
+  },
+  "claude": {
+    "minVersion": "1.0.0"
+  },
+  "components": {
+    "agents": [
+      {
+        "id": "product-manager",
+        "name": "Product Manager",
+        "description": "Creates PRDs, user stories, and manages feature scope"
+      },
+      {
+        "id": "tech-lead",
+        "name": "Tech Lead",
+        "description": "Agent orchestrator for architecture decisions and conflict resolution"
+      },
+      {
+        "id": "backend-architect",
+        "name": "Backend Architect",
+        "description": "API & Database Design specialist"
+      },
+      {
+        "id": "frontend-architect",
+        "name": "Frontend Architect",
+        "description": "UI/UX & Components specialist"
+      },
+      {
+        "id": "mobile-architect",
+        "name": "Mobile Architect",
+        "description": "React Native, Expo, and mobile development"
+      },
+      {
+        "id": "qa-engineer",
+        "name": "QA Engineer",
+        "description": "Testing, quality assurance, and bug hunting"
+      },
+      {
+        "id": "security-auditor",
+        "name": "Security Auditor",
+        "description": "Security review, vulnerability scanning, OWASP audits"
+      },
+      {
+        "id": "monetization-expert",
+        "name": "Monetization Expert",
+        "description": "Revenue strategy, pricing models, feature gating"
+      }
+    ],
+    "skills": [
+      "vision",
+      "interview",
+      "bootstrap",
+      "step-by-step",
+      "polish",
+      "record-decision",
+      "ship-it",
+      "guide",
+      "roadmap",
+      "debug",
+      "refactor"
+    ],
+    "features": [
+      "Multi-agent orchestration",
+      "Persistent memory system (ADR)",
+      "Comprehensive hooks system (13 events)",
+      "Security guardrails",
+      "Auto-formatting support",
+      "Plan Mode workflow",
+      "Spec-driven development",
+      "Quality gates"
+    ]
+  }
+}

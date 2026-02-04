@@ -84,7 +84,7 @@ your-project/
     │   ├── qa-engineer.md
     │   ├── security-auditor.md
     │   └── monetization-expert.md
-    ├── skills/                  # 10 slash commands
+    ├── skills/                  # 11 slash commands
     │   ├── bootstrap/
     │   ├── interview/
     │   ├── step-by-step/
@@ -94,7 +94,8 @@ your-project/
     │   ├── guide/
     │   ├── roadmap/
     │   ├── debug/
-    │   └── refactor/
+    │   ├── refactor/
+    │   └── vision/                # Comprehensive product discovery
     ├── docs/
     │   ├── DECISIONS.md         # Memory system (auto-loaded)
     │   ├── MANUAL.md            # User guide
@@ -349,13 +350,7 @@ After file changes:
 
 ---
 
-## 🎯 Memory System
-
-Virtuoso maintains persistent memory across sessions through **Architecture Decision Records (ADRs)**.
-
-### How It Works
-
-### Customize Agents
+## 🎯 Customization
 
 Edit or remove agents in `.claude/agents/`:
 
